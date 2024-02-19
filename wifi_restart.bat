@@ -1,0 +1,3 @@
+@echo off
+devcon restart "@PCI\VEN_8086&DEV_095A&SUBSYS_50108086&REV_59\34E12DFFFF34775900"
+ping -n 4 0.0.0.0 > nul
