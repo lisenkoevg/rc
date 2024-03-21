@@ -3,12 +3,13 @@
 # [[ "$0" =~ \.sh$ ]] && ln -s "$0" /bin/beep
 
 soundDevice=Speakers
-freq=${1:-2000}
-duration=${2:-200}
-beepVolume=10
+let freq=${1:-2000}
+let duration=${2:-200}
+let beepVolume=10
 
 currentVolume=$(svcl /Stdout /GetPercent "$soundDevice")
-svcl /SetVolume "$soundDevice" $beepVolume
+let currentVolume=${currentVolume%.*}
+[ "$currentVolume" -gt "$beepVolume" ] && svcl /SetVolume "$soundDevice" $beepVolume
 nircmd beep $freq $duration
-svcl /SetVolume "$soundDevice" $currentVolume
+[ "$currentVolume" -gt "$beepVolume" ] && svcl /SetVolume "$soundDevice" $currentVolume
 
