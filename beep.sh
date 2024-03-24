@@ -11,5 +11,5 @@ currentVolume=$(svcl /Stdout /GetPercent "$soundDevice")
 let currentVolume=${currentVolume%.*}
 [ "$currentVolume" -gt "$beepVolume" ] && svcl /SetVolume "$soundDevice" $beepVolume
 nircmd beep $freq $duration
-[ "$currentVolume" -gt "$beepVolume" ] && svcl /SetVolume "$soundDevice" $currentVolume
+[ "$currentVolume" -gt "$beepVolume" ] && sleep 0.2 && svcl /SetVolume "$soundDevice" $currentVolume
 
