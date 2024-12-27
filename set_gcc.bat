@@ -11,7 +11,7 @@ if "%1"=="cygwin" (
   set prefix=x86_64-pc-cygwin
 )
 if "%prefix%"=="" (
-  echo Run: %this% mingw ^| cygwin  
+  echo Run: %this% mingw ^| cygwin
   for %%i in (%exe%) do (
     findlinks -nobanner %basedir%\%%i.exe | grep exe -B 1
     echo ================================================
@@ -23,7 +23,7 @@ if "%prefix%"=="" (
   )
   for %%i in (%exe%) do (
     del /f %basedir%\%%i.exe
-    mklink /h "%basedir%\%%i.exe" "%basedir%\%prefix%-%%i.exe" 
+    mklink /h "%basedir%\%%i.exe" "%basedir%\%prefix%-%%i.exe"
   )
   pause
 )
