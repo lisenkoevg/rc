@@ -1,6 +1,7 @@
 @echo off
 set dir=%~dp0
 set args=%*
+
 if "%1" == "" (
   echo Usage: %0 ^<link^>
   echo Usage: %0 comments ^<link^>
@@ -12,7 +13,7 @@ if "%1" == "" (
 if "%1" == "convertComments" (
   set prettyCommentsFilename="comments.txt"
   if not "%3" == "" set prettyCommentsFilename=%3
-  bash json_pp < %2 | grep -Po "\btext. :.*$" > %prettyCommentsFilename%
+  bash json_pp < %2 | grep -Po "\btext. :.*$" > "%prettyCommentsFilename%"
   goto :eof
 )
 
