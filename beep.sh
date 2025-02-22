@@ -5,7 +5,7 @@
 soundDevice="Realtek High Definition Audio(SST)\Device\Speakers\Render"
 let freq=${1:-2000}
 let duration=${2:-200}
-let beepVolume=10
+let beepVolume=${3:-10}
 
 currentVolume=$(svcl /Stdout /GetPercent "$soundDevice")
 let currentVolume=${currentVolume%.*}

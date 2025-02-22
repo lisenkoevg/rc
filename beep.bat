@@ -1,2 +1,2 @@
 @echo off
-bash beep.sh "%*"
+bash beep.sh %*
