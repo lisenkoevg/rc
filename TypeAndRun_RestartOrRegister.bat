@@ -1,5 +1,6 @@
 @echo off
 
+setlocal
 set keyName=HKEY_CURRENT_USER\SOFTWARE\Microsoft\Windows\CurrentVersion\Run
 set keyValue=TypeAndRun
 
@@ -10,15 +11,17 @@ set configDir=c:\bin\TypeAndRun
 set settings=TypeAndRun.ini
 set config=Config.ini
 
-set value="\"%exeDir%\TypeAndRun.exe\" --settings=\"%configDir%\%settings%\" --config=\"%configDir%\%config%\"" /f /reg:64
-set cmd="%exeDir%\TypeAndRun.exe" --settings="%configDir%\%settings%" --config="%configDir%\%config%"
+set value="\"%exeDir%\TypeAndRun.exe\" --settings=\"%configDir%\%settings%\" --config=\"%configDir%\%config%\""
+set cmd_line="%exeDir%\TypeAndRun.exe" --settings="%configDir%\%settings%" --config="%configDir%\%config%"
 
+set arch=64
 
 if "%1" == "register" (
-  reg query %keyName% /v %keyValue% /reg:64
-  reg add %keyName% /v %keyValue% /t REG_SZ /d %value%
-  reg query %keyName% /v %keyValue% /reg:64
+  reg query %keyName% /v %keyValue% /reg:%arch%
+  reg add %keyName% /v %keyValue% /t REG_SZ /d %value% /f /reg:%arch%
+  reg query %keyName% /v %keyValue% /reg:%arch%
 ) else (
   pskill -nobanner -accepteula TypeAndRun.exe
-  start "" %cmd%
+  start "" %cmd_line%
 )
+endlocal
