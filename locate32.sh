@@ -7,6 +7,7 @@ function main() {
   CtrlCMsg=" (Ctrl-C - exit)"
   # use whole path name to search
   cmd="$exe -w $*"
+  echo "$cmd"
   found=$($cmd | dos2unix)
   if [[ -z $found ]]; then
     read -p "Nothing was found. Try another query$CtrlCMsg: " q
@@ -35,7 +36,7 @@ function main() {
 
 function executeItem() {
   if echo "$1" | grep -qsP "(Makefile|sh|asm|h|cpp|c|txt|vim|js|py|xml|json|sed|awk)$"; then
-    gvim "$1"
+    cygstart gvim "$1"
   else
     cygstart "$1"
   fi
