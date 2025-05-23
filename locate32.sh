@@ -4,6 +4,9 @@ exe='d:\Soft\locate\locate.exe'
 exe=$(cygpath $exe)
 
 function main() {
+  if [ -z "$1" ]; then
+    exit
+  fi
   CtrlCMsg=" (Ctrl-C - exit)"
   # use whole path name to search
   cmd="$exe -w $*"
@@ -25,9 +28,14 @@ function main() {
   fi
   REPLY=
   while [[ -z $REPLY ]]; do
-    read -p "Select item number (from 1 to $count) or enter new query$CtrlCMsg: "
-    if [[ "$REPLY" =~ ^[[:digit:]]+$ && ! ( "$REPLY" -lt 1 || "$REPLY" -gt "$count" ) ]]; then
-      executeItem "$(echo "$found" | head -n $REPLY | tail -n 1)"
+    msg="Select item number from 1 to $count to execute, prepend number with:\n'c' - copy to clipboard,\n't' - open folder in total commander,\n'e' - open folder in explorer\nor enter new query$CtrlCMsg:"
+    echo -e "$msg"
+    read
+    N=$(echo "$REPLY" | grep -oP "\d+")
+    action=$(echo "$REPLY" | grep -oP "[cet]")
+    if [[ ! ( "$N" -lt 1 || "$N" -gt "$count" ) ]]; then
+      item=$(echo "$found" | head -n $N | tail -n 1)
+      executeItem "$item" $action
     else
       main $REPLY
     fi
@@ -35,10 +43,14 @@ function main() {
 }
 
 function executeItem() {
-  if echo "$1" | grep -qsP "(Makefile|sh|asm|h|cpp|c|txt|vim|js|py|xml|json|sed|awk)$"; then
-    cygstart gvim "$1"
-  else
-    cygstart "$1"
+  if [ -z "$2" ]; then
+    if echo "$1" | grep -qsP "(Makefile|sh|asm|h|cpp|c|txt|vim|js|py|xml|json|sed|awk)$"; then
+      cygstart gvim "$1"
+    else
+      cygstart "$1"
+    fi
+  elif [ "$2" == "c" ]; then
+    nircmd clipboard set "$item"
   fi
 }
 
