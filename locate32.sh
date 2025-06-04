@@ -2,6 +2,7 @@
 
 exe='d:\Soft\locate\locate.exe'
 exe=$(cygpath $exe)
+totalcmd=D:/Soft/totalcmd/TOTALCMD64.EXE
 
 function main() {
   if [ -z "$1" ]; then
@@ -26,16 +27,28 @@ function main() {
     executeItem "$(echo "$found")"
     return
   fi
+  opts="bctle"
   REPLY=
+  is_first=
   while [[ -z $REPLY ]]; do
-    msg="Select item number from 1 to $count to execute, prepend number with:\n'c' - copy to clipboard,\n't' - open folder in total commander,\n'e' - open folder in explorer\nor enter new query$CtrlCMsg:"
-    echo -e "$msg"
+    msg=$(cat <<-EOF
+	Select item number from 1 to $count to execute, prepend number with [$opts]:
+	'b' - open folder in bash,
+	'c' - copy to clipboard,
+	't' - open folder in total commander,
+	'l' - open file in total commander lister,
+	'e' - open folder in explorer\nor enter new query$CtrlCMsg:
+EOF
+)
+    if [ -z $is_first ]; then
+      echo -e "$msg"
+    fi
     read
     N=$(echo "$REPLY" | grep -oP "\d+")
-    action=$(echo "$REPLY" | grep -oP "[cet]")
+    action=$(echo "$REPLY" | grep -oP "[$opts]")
     if [[ ! ( "$N" -lt 1 || "$N" -gt "$count" ) ]]; then
       item=$(echo "$found" | head -n $N | tail -n 1)
-      executeItem "$item" $action
+      executeItem "$item" $action || { REPLY= ; is_first=1; }
     else
       main $REPLY
     fi
@@ -49,8 +62,17 @@ function executeItem() {
     else
       cygstart "$1"
     fi
+  elif [ "$2" == "b" ]; then
+    $BASH -i -c "cd $(cygpath -m $(dirname $item)); bash"
   elif [ "$2" == "c" ]; then
     nircmd clipboard set "$item"
+  elif [ "$2" == "t" ]; then
+    cygstart $totalcmd /O /T /P=L "$item"
+  elif [ "$2" == "l" ]; then
+    cygstart $totalcmd /O /S=L "$item"
+    return 1
+  elif [ "$2" == "e" ]; then
+    cygstart explorer $(dirname "$item")
   fi
 }
 
