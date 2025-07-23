@@ -1,12 +1,12 @@
 #!/bin/bash
-
+HISTSIZE=0
 if [[ ! -z "$1" ]]; then
-  term="$1"
-  title "MAN: $term"
+  search="$1"
+  title "MAN: $search"
   if [ -z "$2" ]; then
-    man "$term"
+    man "$search"
   else
     shift
-    MANPAGER="less -i -p \"$*\"" man "$term"
+    MANPAGER="less -i -p \"$*\"" man "$search"
   fi
 fi
